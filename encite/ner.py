@@ -2,7 +2,7 @@ import re
 from typing import cast
 from dataclasses import dataclass
 from pydantic import BaseModel
-from langchain_anthropic import ChatAnthropic
+from langchain_core.language_models import BaseLanguageModel  # Correct base class
 
 
 ENTITY_TYPE_RE = re.compile(r"<entity_type>(.*?)</entity_type>", re.DOTALL)
@@ -150,16 +150,16 @@ def _parse_model_output(
 
 
 def find_entities(
-    model: ChatAnthropic,
+    model: BaseLanguageModel,  # Accept any LangChain-compatible LLM
     text: str,
     *,
     entity_types: list[str],
     system_prompt: str = NER_SYSTEM_PROMPT,
 ) -> list[Entity]:
-    """Find named entities in text using Claude's citations feature.
+    """Find named entities in text using any LangChain-compatible LLM.
 
     Args:
-        model: ChatAnthropic model instance to use for entity recognition
+        model: LLM model instance to use for entity recognition
         text: Input text to analyze
         entity_types: List of entity types to look for (e.g., ["person", "company"])
         system_prompt: Custom system prompt to use (defaults to NER_SYSTEM_PROMPT)
